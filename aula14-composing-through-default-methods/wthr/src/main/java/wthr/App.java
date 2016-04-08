@@ -31,9 +31,13 @@ public class App {
                 .next()
                 .getHistory(LocalDate.of(2016,3, 1), LocalDate.of(2016,3, 29));
 
-        src.sort(
-                Comparators.comparing(WeatherInfo::getPrecipMM)
-                        .andThen(WeatherInfo::getTempC));
+        src.sort( Comparators
+                .comparing(WeatherInfo::getWeatherDesc)
+                .andThen(WeatherInfo::getPrecipMM)
+                .andThen(WeatherInfo::getTempC)
+                .inverted()
+                .inverted()
+        );
         src.forEach(System.out::println);
 
     }

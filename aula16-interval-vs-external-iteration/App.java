@@ -24,14 +24,14 @@ public class  App {
     
     public static int externalSum(List<String> data) {
         int sum = 0;
-        for(String line : data)
+        for(String line : data) // Cada iteração cham o next() e hashNext()
             sum += line.length();
         return sum;
     }
     
     public static int internalSum(List<String> data) {
         int [] sum = {0};
-        data.forEach(l -> sum[0] += l.length());
+        data.forEach(l -> sum[0] += l.length()); // Cada iteração chama a lambda (Consumer<T>)
         return sum[0];
     }
     

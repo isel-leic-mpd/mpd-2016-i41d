@@ -1,5 +1,6 @@
 package queries;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class App {
                 .map(String::length)
                 .limit(3)
                 .forEach(System.out::println);
-
+        ArrayList<String> strs = new ArrayList<>();
+        strs.iterator();
+        strs.stream();
+        strs.spliterator();
     }
 }

@@ -15,8 +15,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.averagingInt;
 import static java.util.stream.Collectors.counting;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 import static wthr.Queries.*;
 
 /**
@@ -35,28 +40,42 @@ public class App {
                 .getHistory(LocalDate.of(2016,4, 1), LocalDate.of(2016,4, 29));
 
 
-        Stream<String> descs2 = src.stream()
-                .filter(w -> w.getTempC() >= 10 )
-                .map(w -> w.getWeatherDesc())
-                .distinct()
-                .limit(3);
-
-
 
         src
                 .stream()
-                .collect(groupingBy(WeatherInfo::getWeatherDesc)) // Map<String, List<WeatherInfo>>
+                .collect(groupingBy(WeatherInfo::getWeatherDesc, counting())) // Map<String, Integer>
                 .entrySet()                                       // Set<Pair<String, List<WeatherInfo>>>
-                .forEach(pair -> System.out.println(
-                        pair.getKey() + ": " +
-                                pair.getValue().stream().map(WeatherInfo::getTempC).collect(Collectors.toList())) );
-
+                .forEach(pair -> System.out.println(pair));
+        System.out.println("---------------------------------");
         src
                 .stream()
-                .collect(groupingBy(WeatherInfo::getWeatherDesc, counting()))
+                // .collect(groupingBy(WeatherInfo::getWeatherDesc)) // Map<String, List<WeatherInfo>>
+                .collect(groupingBy(WeatherInfo::getWeatherDesc, toList())) // Map<String, List<WeatherInfo>>
+                .entrySet()                                                 // Set<Pair<String, List<WeatherInfo>>>
+                .stream()                                                   // Stream<Pair<String, List<WeatherInfo>>>
+                // .map(p -> p.getKey() + ": [" + p.getValue().stream().map(w -> w.getTempC() + "").reduce((prev, w) -> prev + ", " + w).get()+ "]") // Stream<String>
+                .map(p -> p.getKey() + ": [" + p.getValue().stream().map(w -> w.getTempC() + "").collect(joining(","))+ "]") // Stream<String>
+                .forEach(System.out::println);
+        System.out.println("---------------------------------");
+        src
+                .stream()
+                .collect(groupingBy(
+                        WeatherInfo::getWeatherDesc,
+                        mapping(w -> w.getTempC(), toSet())
+                )) // Map<String, List<Integer>>
                 .entrySet()
-                .forEach(pair -> System.out.println( pair.getKey() + ": " + pair.getValue()));
-
+                .stream()
+                .forEach(System.out::println);
+        System.out.println("---------------------------------");
+        src
+                .stream()
+                .collect(groupingBy(
+                        WeatherInfo::getWeatherDesc,
+                        averagingInt(WeatherInfo::getTempC)
+                )) // Map<String, Integer>
+                .entrySet()
+                .stream()
+                .forEach(p -> System.out.println(p.getKey() + ": temp media = " + p.getValue()));
 
     }
 }

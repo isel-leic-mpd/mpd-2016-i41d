@@ -1,0 +1,60 @@
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 
+2 3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 
+java.runtime.name: Java(TM) SE Runtime Environment
+sun.boot.library.path: C:\Program Files\Java\jre1.8.0_91\bin
+java.vm.version: 25.91-b14
+user.country.format: PT
+java.vm.vendor: Oracle Corporation
+java.vendor.url: http://java.oracle.com/
+path.separator: ;
+java.vm.name: Java HotSpot(TM) 64-Bit Server VM
+file.encoding.pkg: sun.io
+user.country: US
+user.script: 
+sun.java.launcher: SUN_STANDARD
+sun.os.patch.level: Service Pack 1
+java.vm.specification.name: Java Virtual Machine Specification
+user.dir: C:\MyFolder\ISEL\Pg4 mpd - 2015-2016 2º sem\aulas\aula28-primes
+java.runtime.version: 1.8.0_91-b14
+java.awt.graphicsenv: sun.awt.Win32GraphicsEnvironment
+java.endorsed.dirs: C:\Program Files\Java\jre1.8.0_91\lib\endorsed
+os.arch: amd64
+java.io.tmpdir: C:\Users\MCARVA~1\AppData\Local\Temp\
+line.separator: 
+
+java.vm.specification.vendor: Oracle Corporation
+user.variant: 
+os.name: Windows 7
+sun.jnu.encoding: Cp1252
+java.library.path: C:\ProgramData\Oracle\Java\javapath;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\ProgramData\Oracle\Java\javapath;C:\Program Files\Java\jdk1.8.0_25\bin;C:\Program Files\Common Files\Microsoft Shared\Windows Live;C:\Program Files (x86)\Common Files\Microsoft Shared\Windows Live;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files (x86)\QuickTime\QTSystem\;C:\Program Files\apache-ant-1.9.2\bin;C:\Program Files\Microsoft Windows Performance Toolkit\;C:\Program Files\Java\apache-maven-3.1.1\bin;C:\Program Files (x86)\Windows Live\Shared;C:\Program Files (x86)\Toshiba\Bluetooth Toshiba Stack\sys\;C:\Program Files (x86)\Toshiba\Bluetooth Toshiba Stack\sys\x64\;C:\Program Files\jEdit;C:\Program Files (x86)\GnuWin32\bin;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files (x86)\Windows Kits\8.1\Windows Performance Toolkit\;C:\Program Files (x86)\Microsoft SDKs\TypeScript\1.0\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\ManagementStudio\;c:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn\;c:\Program Files (x86)\Microsoft SQL Server\110\DTS\Binn\;c:\Program Files\Microsoft SQL Server\110\DTS\Binn\;C:\Windows\System32\;C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE;C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin;C:\Ruby21-x64\bin;C:\MyFolder\shortcuts;C:\Program Files (x86)\scala\bin;C:\Program Files (x86)\sbt\\bin;C:\Program Files\nodejs\;C:\Program Files (x86)\Skype\Phone\;C:\Program Files (x86)\Apache Software Foundation\CouchDB\bin;C:\Program Files\MongoDB\Server\3.0\bin;C:\Program Files (x86)\Heroku\bin;C:\Program Files (x86)\git\cmd;C:\Program Files (x86)\Git\cmd;C:\Program Files (x86)\Git\mingw32\bin;C:\Program Files (x86)\Git\usr\bin;;C:\Program Files (x86)\GNU\GnuPG\pub;C:\sonar-scanner\bin;C:\Users\mcarvalho\AppData\Roaming\npm;;.
+java.specification.name: Java Platform API Specification
+java.class.version: 52.0
+sun.management.compiler: HotSpot 64-Bit Tiered Compilers
+os.version: 6.1
+user.home: C:\Users\mcarvalho
+user.timezone: 
+java.awt.printerjob: sun.awt.windows.WPrinterJob
+file.encoding: Cp1252
+java.specification.version: 1.8
+java.class.path: .;C:\Program Files (x86)\QuickTime\QTSystem\QTJava.zip
+user.name: mcarvalho
+java.vm.specification.version: 1.8
+sun.java.command: Primes
+java.home: C:\Program Files\Java\jre1.8.0_91
+sun.arch.data.model: 64
+user.language: en
+java.specification.vendor: Oracle Corporation
+user.language.format: pt
+awt.toolkit: sun.awt.windows.WToolkit
+java.vm.info: mixed mode
+java.version: 1.8.0_91
+java.ext.dirs: C:\Program Files\Java\jre1.8.0_91\lib\ext;C:\Windows\Sun\Java\lib\ext
+sun.boot.class.path: C:\Program Files\Java\jre1.8.0_91\lib\resources.jar;C:\Program Files\Java\jre1.8.0_91\lib\rt.jar;C:\Program Files\Java\jre1.8.0_91\lib\sunrsasign.jar;C:\Program Files\Java\jre1.8.0_91\lib\jsse.jar;C:\Program Files\Java\jre1.8.0_91\lib\jce.jar;C:\Program Files\Java\jre1.8.0_91\lib\charsets.jar;C:\Program Files\Java\jre1.8.0_91\lib\jfr.jar;C:\Program Files\Java\jre1.8.0_91\classes
+java.vendor: Oracle Corporation
+sun.stderr.encoding: cp850
+file.separator: \
+java.vendor.url.bug: http://bugreport.sun.com/bugreport/
+sun.io.unicode.encoding: UnicodeLittle
+sun.cpu.endian: little
+sun.desktop: windows
+sun.cpu.isalist: amd64

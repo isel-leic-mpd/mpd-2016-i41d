@@ -1,6 +1,9 @@
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.function.*;
+import java.util.Properties;
+import java.util.stream.IntStream;
 
 public class Primes {
 
@@ -39,7 +42,6 @@ public class Primes {
         ArrayList<Integer> res = new ArrayList<>();
         return IntStream
             .range(2, max)
-            .parallel()
             .filter(n -> Primes.isPrimeOpt(res, n))
             .collect(() -> res, ArrayList::add, (l1, l2) -> {});
     }
@@ -50,9 +52,17 @@ public class Primes {
         System.out.println();
         primesOpt(100).forEach(n -> System.out.print(n + " ") );
         System.out.println();
-        
+        /*
         measurePerformance(() -> primesOpt(1_000_000));
         measurePerformance(() -> primes(1_000_000));
+        */
+        Properties p = System.getProperties();
+        Enumeration keys = p.keys();
+        while (keys.hasMoreElements()) {
+          String key = (String)keys.nextElement();
+          String value = (String)p.get(key);
+          System.out.println(key + ": " + value);
+        }
     }
     
     public static <T> T measurePerformance(Supplier<T> action) {

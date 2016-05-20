@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="-88.0" y="257.0">monitrgw.domain.IMonitrService</node>
+    <node x="473.0" y="-3.0">monitrgw.domain.IMonitrStockAnalysisData</node>
+    <node x="89.0" y="0.0">monitrgw.domain.IMonitrStockDetails</node>
+    <node x="-270.0" y="5.0">monitrgw.domain.IMonitrMarketData</node>
+  </nodes>
+  <notes />
+  <edges />
+  <settings layout="Hierarchic Group" zoom="1.0" x="283.5" y="264.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

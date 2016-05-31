@@ -21,7 +21,11 @@ import monitrgw.webapi.dto.MonitrMarketDto;
 import monitrgw.webapi.dto.MonitrStockAnalysisDto;
 import monitrgw.webapi.dto.MonitrStockAnalysisDtoData;
 import monitrgw.webapi.dto.MonitrStockDetailsDto;
-import monitrgw.util.HttpGetter;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClient;
+import org.asynchttpclient.Response;
+
+import java.io.IOException;
 
 public class MonitrApi {
     private static final String MONITR_API_KEY = "1e3f8640-f754-11e3-97e9-179fff8a3cc5";
@@ -54,8 +58,16 @@ public class MonitrApi {
 
     private static <T> T callMonitrAction(Class<T> destKlass, String action, Object...args) {
         final String uri = String.format(action, args);
-        return HttpGetter.httpGet(
-                MONITR_URI + uri,
-                ent -> jsonReader.fromJson(ent, destKlass));
+        try(AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient()){
+            return asyncHttpClient
+                    .prepareGet(MONITR_URI + uri)
+                    .execute()
+                    .toCompletableFuture()
+                    .thenApply(Response::getResponseBody)
+                    .thenApply(body -> jsonReader.fromJson(body, destKlass))
+                    .join();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

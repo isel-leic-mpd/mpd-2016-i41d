@@ -21,9 +21,6 @@ import monitrgw.domain.IMonitrMarketData;
 import monitrgw.domain.async.MonitrServiceAsync;
 import monitrgw.domain.eager.MonitrServiceEager;
 import monitrgw.domain.lazy.MonitrServiceLazy;
-import monitrgw.util.HttpGetter;
-import monitrgw.webapi.MonitrApi;
-import monitrgw.webapi.dto.MonitrMarketDto;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;

@@ -1,8 +1,6 @@
 package monitrgw.domain.eager;
 
-import monitrgw.domain.IMonitrMarketData;
 import monitrgw.domain.IMonitrService;
-import monitrgw.domain.IMonitrStockDetails;
 import monitrgw.domain.MonitrMarketData;
 import monitrgw.domain.MonitrStockAnalysisData;
 import monitrgw.domain.MonitrStockDetails;
@@ -20,7 +18,7 @@ import java.util.stream.Stream;
  */
 public class MonitrServiceEager implements IMonitrService{
 
-    public Stream<IMonitrMarketData> GetLastNews(){
+    public Stream<MonitrMarketData> GetLastNews(){
         MonitrMarketDto dto = MonitrApi.GetLastNews(); // 1 http get request
         return dto
                 .data      // List<MonitrMarketDtoData>
@@ -30,8 +28,8 @@ public class MonitrServiceEager implements IMonitrService{
                 .stream();
     }
 
-    private static IMonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
-        IMonitrStockDetails stockDetails = getStockDetails(dto.symbol); // 1 http get request
+    private static MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
+        MonitrStockDetails stockDetails = getStockDetails(dto.symbol); // 1 http get request
         return new MonitrMarketData(
                 dto.market,
                 dto.title,
@@ -43,7 +41,7 @@ public class MonitrServiceEager implements IMonitrService{
         );
     }
 
-    private static IMonitrStockDetails getStockDetails(String symbol) {
+    private static MonitrStockDetails getStockDetails(String symbol) {
         MonitrStockDetailsDto dto = MonitrApi.GetStockDetails(symbol);
         MonitrStockAnalysisDtoData a = MonitrApi.GetStockAnalysis(dto.symbol);
 

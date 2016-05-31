@@ -1,9 +1,6 @@
 package monitrgw.domain.lazy;
 
-import monitrgw.domain.IMonitrMarketData;
 import monitrgw.domain.IMonitrService;
-import monitrgw.domain.IMonitrStockAnalysisData;
-import monitrgw.domain.IMonitrStockDetails;
 import monitrgw.domain.MonitrMarketData;
 import monitrgw.domain.MonitrStockAnalysisData;
 import monitrgw.domain.MonitrStockDetails;
@@ -11,12 +8,9 @@ import monitrgw.util.Cache;
 import monitrgw.webapi.MonitrApi;
 import monitrgw.webapi.dto.MonitrMarketDto;
 import monitrgw.webapi.dto.MonitrMarketDtoData;
-import monitrgw.webapi.dto.MonitrStockAnalysisDto;
 import monitrgw.webapi.dto.MonitrStockAnalysisDtoData;
 import monitrgw.webapi.dto.MonitrStockDetailsDto;
 
-import java.lang.reflect.Array;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,7 +19,7 @@ import java.util.stream.Stream;
  */
 public class MonitrServiceLazy implements IMonitrService{
 
-    public Stream<IMonitrMarketData> GetLastNews(){
+    public Stream<MonitrMarketData> GetLastNews(){
         MonitrMarketDto dto = MonitrApi.GetLastNews(); // 1 http get request
         return dto
                 .data      // List<MonitrMarketDtoData>
@@ -35,7 +29,7 @@ public class MonitrServiceLazy implements IMonitrService{
                 .stream();
     }
 
-    private static IMonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
+    private static MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
         return new MonitrMarketData(
                 dto.market,
                 dto.title,
@@ -47,7 +41,7 @@ public class MonitrServiceLazy implements IMonitrService{
         );
     }
 
-    private static IMonitrStockDetails getStockDetails(String symbol) {
+    private static MonitrStockDetails getStockDetails(String symbol) {
         MonitrStockDetailsDto dto = MonitrApi.GetStockDetails(symbol);
         return new MonitrStockDetails(
                 dto.industry,
@@ -61,7 +55,7 @@ public class MonitrServiceLazy implements IMonitrService{
                 Cache.cache(s -> getStockAnalysis(s, dto.name)));
     }
 
-    private static IMonitrStockAnalysisData getStockAnalysis(String s, String name) {
+    private static MonitrStockAnalysisData getStockAnalysis(String s, String name) {
         MonitrStockAnalysisDtoData a = MonitrApi.GetStockAnalysis(s);
         return new MonitrStockAnalysisData(
                 s,

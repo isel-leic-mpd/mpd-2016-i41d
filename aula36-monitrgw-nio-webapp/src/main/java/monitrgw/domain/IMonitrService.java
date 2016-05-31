@@ -7,5 +7,5 @@ import java.util.stream.Stream;
  *         created on 20-05-2016
  */
 public interface IMonitrService {
-    Stream<IMonitrMarketData> GetLastNews();
+    Stream<MonitrMarketData> GetLastNews();
 }

@@ -17,9 +17,7 @@
 
 package monitrgw.domain;
 
-import monitrgw.domain.IMonitrStockAnalysisData;
-
-public class MonitrStockAnalysisData implements IMonitrStockAnalysisData{
+public class MonitrStockAnalysisData {
     private final String symbol;
     private final String name;
     private final int mentions;

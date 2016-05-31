@@ -16,14 +16,10 @@
  */
 package monitrgw;
 
-import com.google.gson.Gson;
-import monitrgw.domain.IMonitrMarketData;
+import monitrgw.domain.MonitrMarketData;
 import monitrgw.domain.async.MonitrServiceAsync;
 import monitrgw.domain.eager.MonitrServiceEager;
 import monitrgw.domain.lazy.MonitrServiceLazy;
-import monitrgw.util.HttpGetter;
-import monitrgw.webapi.MonitrApi;
-import monitrgw.webapi.dto.MonitrMarketDto;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -32,18 +28,11 @@ import java.util.stream.Stream;
 public class App {
 
     public static void main(String[] args) throws InterruptedException {
-        /*
-        MonitrMarketDto marketData = HttpGetter.httpGet(
-                "http://api.monitr.com/api/v1/market/news?apikey=1e3f8640-f754-11e3-97e9-179fff8a3cc5",
-                content -> new Gson().fromJson(content, MonitrMarketDto.class));
-        */
 
-        // System.out.println( marketData);
-
-        final Stream<IMonitrMarketData> data = new MonitrServiceEager().GetLastNews();
+        final Stream<MonitrMarketData> data = new MonitrServiceEager().GetLastNews();
 
         System.out.println("########### Eager approach.... ");
-        final IMonitrMarketData first = measure(() -> data.findFirst().get());  // 1 Http request + // 1 Http request
+        final MonitrMarketData first = measure(() -> data.findFirst().get());  // 1 Http request + // 1 Http request
         measure(() -> first.getStockDetails());
         measure(() -> first.getStockDetails().getAnalysis());
         System.out.println("########### Eager approach.... ");
@@ -52,8 +41,8 @@ public class App {
         measure(() -> first.getStockDetails().getAnalysis());
 
         System.out.println("########### Lazy approach.... ");
-        final Stream<IMonitrMarketData> data2 = new MonitrServiceLazy().GetLastNews();
-        final IMonitrMarketData first2= measure(() -> data2.findFirst().get());
+        final Stream<MonitrMarketData> data2 = new MonitrServiceLazy().GetLastNews();
+        final MonitrMarketData first2= measure(() -> data2.findFirst().get());
         measure(() -> first2.getStockDetails()); // 1 Http request
         measure(() -> first2.getStockDetails().getAnalysis()); // 1 Http request
         System.out.println("########### Lazy approach.... ");
@@ -62,8 +51,8 @@ public class App {
         measure(() -> first2.getStockDetails().getAnalysis()); // 1 Http request
 
         System.out.println("########### Async approach.... ");
-        final Stream<IMonitrMarketData> data3 = new MonitrServiceAsync().GetLastNews(); // 1 Http request + 1 Http request
-        final IMonitrMarketData first3 = measure(() -> data3.findFirst().get());
+        final Stream<MonitrMarketData> data3 = new MonitrServiceAsync().GetLastNews(); // 1 Http request + 1 Http request
+        final MonitrMarketData first3 = measure(() -> data3.findFirst().get());
         sleep(200); // Doing stuff....
         measure(() -> first3.getStockDetails());
         measure(() -> first3.getStockDetails().getAnalysis()); // 1 Http request

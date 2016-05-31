@@ -1,7 +1,5 @@
 package monitrgw.domain;
 
-import monitrgw.domain.IMonitrMarketData;
-import monitrgw.domain.IMonitrStockDetails;
 import monitrgw.webapi.MonitrApi;
 import monitrgw.webapi.dto.MonitrMarketDtoData;
 import monitrgw.webapi.dto.MonitrStockDetailsDto;
@@ -11,14 +9,14 @@ import java.util.function.Function;
 /**
  * Created by mcarvalho on 28-05-2015.
  */
-public class MonitrMarketData implements IMonitrMarketData{
+public class MonitrMarketData{
     private final String market;
     private final String title;
     private final String stockSymbol;
     private final String link;
     private final long timeInMilis;
     private final String domain;
-    private final Function<String, IMonitrStockDetails> stockDetails;
+    private final Function<String, MonitrStockDetails> stockDetails;
 
     public MonitrMarketData(
             String market,
@@ -27,7 +25,7 @@ public class MonitrMarketData implements IMonitrMarketData{
             String link,
             long timeInMilis,
             String domain,
-            Function<String, IMonitrStockDetails> stockDetails) {
+            Function<String, MonitrStockDetails> stockDetails) {
         this.market = market;
         this.title = title;
         this.stockSymbol = stockSymbol;
@@ -61,7 +59,7 @@ public class MonitrMarketData implements IMonitrMarketData{
         return domain;
     }
 
-    public IMonitrStockDetails getStockDetails() {
+    public MonitrStockDetails getStockDetails() {
         return stockDetails.apply(stockSymbol);
     }
 

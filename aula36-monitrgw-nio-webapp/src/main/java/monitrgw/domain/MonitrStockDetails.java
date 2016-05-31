@@ -1,7 +1,5 @@
 package monitrgw.domain;
 
-import monitrgw.domain.IMonitrStockAnalysisData;
-import monitrgw.domain.IMonitrStockDetails;
 import monitrgw.webapi.MonitrApi;
 import monitrgw.webapi.dto.MonitrStockAnalysisDtoData;
 
@@ -11,7 +9,7 @@ import java.util.function.Function;
 /**
  * Created by mcarvalho on 28-05-2015.
  */
-public class MonitrStockDetails implements IMonitrStockDetails{
+public class MonitrStockDetails {
     private final String industry;
     private final String name;
     private final String sector;
@@ -20,7 +18,7 @@ public class MonitrStockDetails implements IMonitrStockDetails{
     private final String description;
     private final List<String> alias;
     private final List<String> competitors;
-    private final Function<String, IMonitrStockAnalysisData> analysis;
+    private final Function<String, MonitrStockAnalysisData> analysis;
 
     public MonitrStockDetails(
             String industry,
@@ -31,7 +29,7 @@ public class MonitrStockDetails implements IMonitrStockDetails{
             String description,
             List<String> alias,
             List<String> competitors,
-            Function<String, IMonitrStockAnalysisData> analysis) {
+            Function<String, MonitrStockAnalysisData> analysis) {
         this.industry = industry;
         this.name = name;
         this.sector = sector;
@@ -43,32 +41,26 @@ public class MonitrStockDetails implements IMonitrStockDetails{
         this.analysis = analysis;
     }
 
-    @Override
     public String getIndustry() {
         return industry;
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public String getSector() {
         return sector;
     }
 
-    @Override
     public String getSymbol() {
         return symbol;
     }
 
-    @Override
     public int getStatus() {
         return status;
     }
 
-    @Override
     public String getDescription() {
         return description;
     }
@@ -81,8 +73,7 @@ public class MonitrStockDetails implements IMonitrStockDetails{
         return competitors;
     }
 
-    @Override
-    public IMonitrStockAnalysisData getAnalysis() {
+    public MonitrStockAnalysisData getAnalysis() {
         return analysis.apply(symbol);
     }
 }

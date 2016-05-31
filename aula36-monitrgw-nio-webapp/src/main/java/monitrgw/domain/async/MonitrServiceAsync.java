@@ -19,19 +19,21 @@ import java.util.stream.Stream;
 /**
  * Created by mcarvalho on 28-05-2015.
  */
-public class MonitrServiceAsync implements IMonitrService{
+public class MonitrServiceAsync implements IMonitrService, AutoCloseable{
+
+    private final MonitrApi monitrApi = new MonitrApi();
 
     public Stream<MonitrMarketData> GetLastNews(){
-        MonitrMarketDto dto = MonitrApi.GetLastNews(); // 1 http get request
-        return dto
+        CompletableFuture<MonitrMarketDto> dtoPromise = monitrApi.GetLastNews(); // 1 http get request
+        CompletableFuture<Stream<MonitrMarketDtoData>> streamPromise = dtoPromise.thenApply(dto -> dto
                 .data      // List<MonitrMarketDtoData>
-                .stream()  // Stream<MonitrMarketDtoData>
-                .map(MonitrServiceAsync::dtoToDomain)  // Stream<IMonitrMarketData>
-                .collect(Collectors.toList())
-                .stream();
+                .stream());  // Stream<MonitrMarketDtoData>
+        return Stream.of(streamPromise)
+                .flatMap(p -> p.join())
+                .map(this::dtoToDomain);  // Stream<IMonitrMarketData>
     }
 
-    private static MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
+    private MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
         return new MonitrMarketData(
                 dto.market,
                 dto.title,
@@ -43,29 +45,30 @@ public class MonitrServiceAsync implements IMonitrService{
         );
     }
 
-    private static Function<String, MonitrStockDetails> getStockDetailsAsync(String symbol) {
-        CompletableFuture<MonitrStockDetails> stock = CompletableFuture.supplyAsync(() -> getStockDetails(symbol)); // 1 http get request
+    private Function<String, MonitrStockDetails> getStockDetailsAsync(String symbol) {
+        CompletableFuture<MonitrStockDetails> stock = getStockDetails(symbol); // 1 http get request
         return (s) -> stock.join(); // Waiting for response
     }
 
 
-    private static MonitrStockDetails getStockDetails(String symbol) {
-        MonitrStockDetailsDto dto = MonitrApi.GetStockDetails(symbol);
-        return new MonitrStockDetails(
-                dto.industry,
-                dto.name,
-                dto.sector,
-                dto.symbol,
-                dto.status,
-                dto.description,
-                dto.alias,
-                dto.competitors,
-                getStockAnalysis(symbol, dto.name));
+    private CompletableFuture<MonitrStockDetails> getStockDetails(String symbol) {
+        return monitrApi
+                .GetStockDetails(symbol)
+                .thenApply(dto -> new MonitrStockDetails(
+                        dto.industry,
+                        dto.name,
+                        dto.sector,
+                        dto.symbol,
+                        dto.status,
+                        dto.description,
+                        dto.alias,
+                        dto.competitors,
+                        getStockAnalysis(symbol, dto.name)));
     }
 
-    private static Function<String, MonitrStockAnalysisData> getStockAnalysis(String s, String name) {
-        CompletableFuture<MonitrStockAnalysisData> res = CompletableFuture
-                .supplyAsync(() -> MonitrApi.GetStockAnalysis(s))
+    private Function<String, MonitrStockAnalysisData> getStockAnalysis(String s, String name) {
+        CompletableFuture<MonitrStockAnalysisData> res = monitrApi
+                .GetStockAnalysis(s)
                 .thenApply(dto -> new MonitrStockAnalysisData(
                     s,
                     name,
@@ -77,5 +80,12 @@ public class MonitrServiceAsync implements IMonitrService{
 
         return (symbol) -> res.join();
     }
+    @Override
+    public void close() throws Exception {
+        if(!monitrApi.isClosed()) monitrApi.close();
+    }
 
+    public boolean isClosed() {
+        return monitrApi.isClosed();
+    }
 }

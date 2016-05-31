@@ -22,20 +22,25 @@ import monitrgw.webapi.dto.MonitrStockAnalysisDto;
 import monitrgw.webapi.dto.MonitrStockAnalysisDtoData;
 import monitrgw.webapi.dto.MonitrStockDetailsDto;
 import monitrgw.util.HttpGetter;
+import org.asynchttpclient.AsyncHttpClient;
+import org.asynchttpclient.DefaultAsyncHttpClient;
 
-public class MonitrApi {
+import java.util.concurrent.CompletableFuture;
+
+public class MonitrApi implements AutoCloseable{
     private static final String MONITR_API_KEY = "1e3f8640-f754-11e3-97e9-179fff8a3cc5";
     private static final String MONITR_URI = "http://api.monitr.com/api";
-    private static final Gson jsonReader = new Gson();
+    private final Gson jsonReader = new Gson();
+    private final AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
 
-    public static MonitrMarketDto GetLastNews() {
+    public CompletableFuture<MonitrMarketDto> GetLastNews() {
         return callMonitrAction(
                 MonitrMarketDto.class,
                 "/v1/market/news?apikey=%s",
                 MONITR_API_KEY);
     }
 
-    public static MonitrStockDetailsDto GetStockDetails(String stockSymbol){
+    public CompletableFuture<MonitrStockDetailsDto> GetStockDetails(String stockSymbol){
         return callMonitrAction(
                 MonitrStockDetailsDto.class,
                 "/v2/symbol?apikey=%s&symbol=%s",
@@ -43,19 +48,30 @@ public class MonitrApi {
                 stockSymbol);
     }
 
-    public static MonitrStockAnalysisDtoData GetStockAnalysis(String stockSymbol){
-        MonitrStockAnalysisDto stockAnalysis = callMonitrAction(
+    public CompletableFuture<MonitrStockAnalysisDtoData> GetStockAnalysis(String stockSymbol){
+        CompletableFuture<MonitrStockAnalysisDto> stockAnalysis = callMonitrAction(
                 MonitrStockAnalysisDto.class,
                 "/v2/symbol/mentions?apikey=%s&symbol=%s&startDay=0&endDay=1",
                 MONITR_API_KEY,
                 stockSymbol);
-        return stockAnalysis.analysis.get(0);
+        return stockAnalysis.thenApply(dto -> dto.analysis.get(0));
     }
 
-    private static <T> T callMonitrAction(Class<T> destKlass, String action, Object...args) {
+    private<T> CompletableFuture<T> callMonitrAction(Class<T> destKlass, String action, Object...args) {
         final String uri = String.format(action, args);
-        return HttpGetter.httpGet(
-                MONITR_URI + uri,
-                ent -> jsonReader.fromJson(ent, destKlass));
+        return asyncHttpClient
+                .prepareGet(MONITR_URI + uri)
+                .execute()
+                .toCompletableFuture()
+                .thenApply(r -> jsonReader.fromJson(r.getResponseBody(), destKlass));
+    }
+
+    @Override
+    public void close() throws Exception {
+        if(!asyncHttpClient.isClosed()) asyncHttpClient.close();
+    }
+
+    public boolean isClosed() {
+        return asyncHttpClient.isClosed();
     }
 }

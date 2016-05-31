@@ -19,7 +19,6 @@ package monitrgw;
 import monitrgw.domain.MonitrMarketData;
 import monitrgw.domain.async.MonitrServiceAsync;
 import monitrgw.domain.eager.MonitrServiceEager;
-import monitrgw.domain.lazy.MonitrServiceLazy;
 
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -27,7 +26,7 @@ import java.util.stream.Stream;
 
 public class App {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
 
         final Stream<MonitrMarketData> data = new MonitrServiceEager().GetLastNews();
 
@@ -40,27 +39,18 @@ public class App {
         measure(() -> first.getStockDetails());
         measure(() -> first.getStockDetails().getAnalysis());
 
-        System.out.println("########### Lazy approach.... ");
-        final Stream<MonitrMarketData> data2 = new MonitrServiceLazy().GetLastNews();
-        final MonitrMarketData first2= measure(() -> data2.findFirst().get());
-        measure(() -> first2.getStockDetails()); // 1 Http request
-        measure(() -> first2.getStockDetails().getAnalysis()); // 1 Http request
-        System.out.println("########### Lazy approach.... ");
-        measure(() -> first2);
-        measure(() -> first2.getStockDetails()); // 1 Http request
-        measure(() -> first2.getStockDetails().getAnalysis()); // 1 Http request
-
-        System.out.println("########### Async approach.... ");
-        final Stream<MonitrMarketData> data3 = new MonitrServiceAsync().GetLastNews(); // 1 Http request + 1 Http request
-        final MonitrMarketData first3 = measure(() -> data3.findFirst().get());
-        sleep(200); // Doing stuff....
-        measure(() -> first3.getStockDetails());
-        measure(() -> first3.getStockDetails().getAnalysis()); // 1 Http request
-        System.out.println("########### Async approach.... ");
-        measure(() -> first3);
-        measure(() -> first3.getStockDetails()); // 1 Http request
-        measure(() -> first3.getStockDetails().getAnalysis()); // 1 Http request
-
+        try(MonitrServiceAsync nonitrService = new MonitrServiceAsync()){
+            System.out.println("########### Async approach.... ");
+            final Stream<MonitrMarketData> data3 = nonitrService.GetLastNews(); // 1 Http request + 1 Http request
+            final MonitrMarketData first3 = measure(() -> data3.findFirst().get());
+            sleep(200); // Doing stuff....
+            measure(() -> first3.getStockDetails());
+            measure(() -> first3.getStockDetails().getAnalysis()); // 1 Http request
+            System.out.println("########### Async approach.... ");
+            measure(() -> first3);
+            measure(() -> first3.getStockDetails()); // 1 Http request
+            measure(() -> first3.getStockDetails().getAnalysis()); // 1 Http request
+        }
     }
 
     private static void sleep(int dur) {

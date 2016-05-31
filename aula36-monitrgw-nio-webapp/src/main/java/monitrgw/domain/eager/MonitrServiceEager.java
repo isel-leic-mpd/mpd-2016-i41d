@@ -16,19 +16,21 @@ import java.util.stream.Stream;
 /**
  * Created by mcarvalho on 28-05-2015.
  */
-public class MonitrServiceEager implements IMonitrService{
+public class MonitrServiceEager implements IMonitrService, AutoCloseable{
+
+    private final MonitrApi monitrApi = new MonitrApi();
 
     public Stream<MonitrMarketData> GetLastNews(){
-        MonitrMarketDto dto = MonitrApi.GetLastNews(); // 1 http get request
+        MonitrMarketDto dto = monitrApi.GetLastNews().join(); // 1 http get request
         return dto
                 .data      // List<MonitrMarketDtoData>
                 .stream()  // Stream<MonitrMarketDtoData>
-                .map(MonitrServiceEager::dtoToDomain)  // Stream<IMonitrMarketData>
+                .map(this::dtoToDomain)  // Stream<IMonitrMarketData>
                 .collect(Collectors.toList())
                 .stream();
     }
 
-    private static MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
+    private MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
         MonitrStockDetails stockDetails = getStockDetails(dto.symbol); // 1 http get request
         return new MonitrMarketData(
                 dto.market,
@@ -41,9 +43,9 @@ public class MonitrServiceEager implements IMonitrService{
         );
     }
 
-    private static MonitrStockDetails getStockDetails(String symbol) {
-        MonitrStockDetailsDto dto = MonitrApi.GetStockDetails(symbol);
-        MonitrStockAnalysisDtoData a = MonitrApi.GetStockAnalysis(dto.symbol);
+    private MonitrStockDetails getStockDetails(String symbol) {
+        MonitrStockDetailsDto dto = monitrApi.GetStockDetails(symbol).join();
+        MonitrStockAnalysisDtoData a = monitrApi.GetStockAnalysis(dto.symbol).join();
 
         MonitrStockAnalysisData analysis = new MonitrStockAnalysisData(
                 dto.symbol,
@@ -64,5 +66,14 @@ public class MonitrServiceEager implements IMonitrService{
                 dto.alias,
                 dto.competitors,
                 s -> analysis);
+    }
+
+    @Override
+    public void close() throws Exception {
+        if(!monitrApi.isClosed()) monitrApi.close();
+    }
+
+    public boolean isClosed() {
+        return monitrApi.isClosed();
     }
 }

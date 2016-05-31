@@ -18,19 +18,21 @@ import java.util.stream.Stream;
 /**
  * Created by mcarvalho on 28-05-2015.
  */
-public class MonitrServiceEager implements IMonitrService{
+public class MonitrServiceEager implements IMonitrService, AutoCloseable{
+
+    private final MonitrApi api = new MonitrApi();
 
     public Stream<IMonitrMarketData> GetLastNews(){
-        MonitrMarketDto dto = MonitrApi.GetLastNews(); // 1 http get request
+        MonitrMarketDto dto = api.GetLastNews().join(); // 1 http get request
         return dto
                 .data      // List<MonitrMarketDtoData>
                 .stream()  // Stream<MonitrMarketDtoData>
-                .map(MonitrServiceEager::dtoToDomain)  // Stream<IMonitrMarketData>
+                .map(this::dtoToDomain)  // Stream<IMonitrMarketData>
                 .collect(Collectors.toList())
                 .stream();
     }
 
-    private static IMonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
+    private IMonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
         IMonitrStockDetails stockDetails = getStockDetails(dto.symbol); // 1 http get request
         return new MonitrMarketData(
                 dto.market,
@@ -43,9 +45,9 @@ public class MonitrServiceEager implements IMonitrService{
         );
     }
 
-    private static IMonitrStockDetails getStockDetails(String symbol) {
-        MonitrStockDetailsDto dto = MonitrApi.GetStockDetails(symbol);
-        MonitrStockAnalysisDtoData a = MonitrApi.GetStockAnalysis(dto.symbol);
+    private IMonitrStockDetails getStockDetails(String symbol) {
+        MonitrStockDetailsDto dto = api.GetStockDetails(symbol).join();
+        MonitrStockAnalysisDtoData a = api.GetStockAnalysis(dto.symbol).join();
 
         MonitrStockAnalysisData analysis = new MonitrStockAnalysisData(
                 dto.symbol,
@@ -67,4 +69,10 @@ public class MonitrServiceEager implements IMonitrService{
                 dto.competitors,
                 s -> analysis);
     }
+
+    @Override
+    public void close() throws Exception {
+        if(! api.isClosed()) api.close();
+    }
+
 }

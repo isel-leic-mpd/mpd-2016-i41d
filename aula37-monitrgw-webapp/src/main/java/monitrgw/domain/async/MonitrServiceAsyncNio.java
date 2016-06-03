@@ -1,9 +1,6 @@
 package monitrgw.domain.async;
 
-import monitrgw.domain.IMonitrMarketData;
 import monitrgw.domain.IMonitrService;
-import monitrgw.domain.IMonitrStockAnalysisData;
-import monitrgw.domain.IMonitrStockDetails;
 import monitrgw.domain.MonitrMarketData;
 import monitrgw.domain.MonitrStockAnalysisData;
 import monitrgw.domain.MonitrStockDetails;
@@ -26,7 +23,7 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
 
     private final MonitrApi api = new MonitrApi();
 
-    public Stream<IMonitrMarketData> GetLastNews(){
+    public Stream<MonitrMarketData> GetLastNews(){
         CompletableFuture<MonitrMarketDto> dto = api.GetLastNews(); // 1 http get request
         return dto
                 .join()
@@ -35,7 +32,7 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
                 .map(this::dtoToDomain);  // Stream<IMonitrMarketData>
     }
 
-    private IMonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
+    private MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {
         return new MonitrMarketData(
                 dto.market,
                 dto.title,
@@ -47,13 +44,13 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
         );
     }
 
-    private Function<String, IMonitrStockDetails> getStockDetailsAsync(String symbol) {
-        CompletableFuture<IMonitrStockDetails> stock = getStockDetails(symbol); // 1 http get request
+    private Function<String, MonitrStockDetails> getStockDetailsAsync(String symbol) {
+        CompletableFuture<MonitrStockDetails> stock = getStockDetails(symbol); // 1 http get request
         return (s) -> stock.join(); // Waiting for response
     }
 
 
-    private CompletableFuture<IMonitrStockDetails> getStockDetails(String symbol) {
+    private CompletableFuture<MonitrStockDetails> getStockDetails(String symbol) {
         CompletableFuture<MonitrStockDetailsDto> promise = api.GetStockDetails(symbol);
         return promise.thenApply(dto ->
                 new MonitrStockDetails(
@@ -68,7 +65,7 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
                 getStockAnalysis(symbol, dto.name)));
     }
 
-    private Function<String, IMonitrStockAnalysisData> getStockAnalysis(String s, String name) {
+    private Function<String, MonitrStockAnalysisData> getStockAnalysis(String s, String name) {
         CompletableFuture<MonitrStockAnalysisData> res = api
                 .GetStockAnalysis(s)
                 .thenApply(dto -> new MonitrStockAnalysisData(

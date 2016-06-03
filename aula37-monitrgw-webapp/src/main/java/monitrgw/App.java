@@ -16,7 +16,7 @@
  */
 package monitrgw;
 
-import monitrgw.domain.IMonitrMarketData;
+import monitrgw.domain.MonitrMarketData;
 import monitrgw.domain.async.MonitrServiceAsyncNio;
 
 import java.util.function.Supplier;
@@ -42,8 +42,8 @@ public class App {
 */
         try(MonitrServiceAsyncNio service = new MonitrServiceAsyncNio()) {
             System.out.println("########### Async approach.... ");
-            final Stream<IMonitrMarketData> data3 = measure(() -> service.GetLastNews()); // 1 Http request + 1 Http request
-            final IMonitrMarketData first3 = measure(() -> data3.findFirst().get());
+            final Stream<MonitrMarketData> data3 = measure(() -> service.GetLastNews()); // 1 Http request + 1 Http request
+            final MonitrMarketData first3 = measure(() -> data3.findFirst().get());
             System.out.println("Doing stuff....");
             sleep(2000); // Doing stuff....
             measure(() -> first3.getStockDetails());

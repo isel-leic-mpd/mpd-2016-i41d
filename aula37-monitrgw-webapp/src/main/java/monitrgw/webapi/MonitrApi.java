@@ -33,6 +33,18 @@ public class MonitrApi implements AutoCloseable {
     private final Gson jsonReader = new Gson();
     private final AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
 
+    public MonitrApi() {
+        // Useless Htpt Request to initialize internal AsyncHttpClient resources
+        // such as thread-poll and further handles.
+        // Thus we can and accelarate subsequent Http Requests.
+        asyncHttpClient
+                .prepareGet("https://www.google.pt")
+                .execute()
+                .toCompletableFuture()
+                .join();
+
+    }
+
     public CompletableFuture<MonitrMarketDto> GetLastNews() {
         return callMonitrAction(
                 MonitrMarketDto.class,

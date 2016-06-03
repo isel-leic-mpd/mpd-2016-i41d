@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement />
+  <nodes>
+    <node x="835.5" y="-15.5">monitrgw.webapi.dto.MonitrStockAnalysisDto</node>
+    <node x="35.0" y="-22.5">monitrgw.webapi.dto.MonitrMarketDto</node>
+    <node x="799.5" y="178.0">monitrgw.webapi.dto.MonitrStockAnalysisDtoData</node>
+    <node x="368.0" y="-22.5">monitrgw.webapi.dto.MonitrStockDetailsDto</node>
+    <node x="-18.5" y="171.5">monitrgw.webapi.dto.MonitrMarketDtoData</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="monitrgw.webapi.dto.MonitrStockAnalysisDto" target="monitrgw.webapi.dto.MonitrStockAnalysisDtoData">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="monitrgw.webapi.dto.MonitrMarketDto" target="monitrgw.webapi.dto.MonitrMarketDtoData">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="483.0" y="254.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+    <Category>Methods</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

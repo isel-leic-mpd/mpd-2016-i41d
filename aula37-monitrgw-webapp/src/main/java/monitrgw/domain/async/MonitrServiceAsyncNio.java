@@ -24,12 +24,13 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
     private final MonitrApi api = new MonitrApi();
 
     public Stream<MonitrMarketData> GetLastNews(){
-        CompletableFuture<MonitrMarketDto> dto = api.GetLastNews(); // 1 http get request
-        return dto
-                .join()
-                .data      // List<MonitrMarketDtoData>
-                .stream()  // Stream<MonitrMarketDtoData>
-                .map(this::dtoToDomain);  // Stream<IMonitrMarketData>
+        CompletableFuture<Stream<MonitrMarketData>> promise = api
+                .GetLastNews()                                      // CompletableFuture<MonitrMarketDto> => 1 http get request
+                .thenApply(dto -> dto.data.stream())                // CompletableFuture<Stream<MonitrMarketDtoData>>
+                .thenApply(stream -> stream.map(this::dtoToDomain));// CompletableFuture<Stream<MonitrMarketData>>
+        return Stream
+                .of(promise)                        // Stream<CompletableFuture<Stream<MonitrMarketData>>>
+                .flatMap(CompletableFuture::join);  // Stream<MonitrMarketData>
     }
 
     private MonitrMarketData dtoToDomain(MonitrMarketDtoData dto) {

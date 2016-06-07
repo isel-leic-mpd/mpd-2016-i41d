@@ -26,20 +26,6 @@ import java.util.stream.Stream;
 public class App {
 
     public static void main(String[] args) throws Exception {
-/*
-        try(MonitrServiceEager service = new MonitrServiceEager()) {
-            Stream<IMonitrMarketData> data = service.GetLastNews();
-
-            System.out.println("########### Eager approach.... ");
-            final IMonitrMarketData first = measure(() -> data.findFirst().get());  // 1 Http request + // 1 Http request
-            measure(() -> first.getStockDetails());
-            measure(() -> first.getStockDetails().getAnalysis());
-            System.out.println("########### Eager approach.... ");
-            measure(() -> first);
-            measure(() -> first.getStockDetails());
-            measure(() -> first.getStockDetails().getAnalysis());
-        }
-*/
         try(MonitrServiceAsyncNio service = new MonitrServiceAsyncNio()) {
             System.out.println("########### Async approach.... ");
             final Stream<MonitrMarketData> data3 = measure(() -> service.GetLastNews()); // 1 Http request + 1 Http request

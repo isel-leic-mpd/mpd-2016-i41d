@@ -87,4 +87,7 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
     }
 
 
+    public boolean isClosed() {
+        return api.isClosed();
+    }
 }

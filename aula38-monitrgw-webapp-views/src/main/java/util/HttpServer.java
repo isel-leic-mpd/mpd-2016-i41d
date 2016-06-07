@@ -20,8 +20,8 @@ public class HttpServer {
     private final Server server;
     private final ServletHandler container;
 
-    public HttpServer() {
-        server = new Server(3000);  // Http Server no port 3000
+    public HttpServer(int port) {
+        server = new Server(port);  // Http Server no port
         container = new ServletHandler(); // Contentor de Servlets
         server.setHandler(container);
     }
@@ -50,7 +50,7 @@ class TimeServlet extends HttpServlet{
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, IOException {
         Charset utf8 = Charset.forName("utf-8");
-        resp.setContentType(String.format("text/plain; charset=%s",utf8.name()));
+        resp.setContentType(String.format("text/html; charset=%s",utf8.name()));
 
         String respBody = handler.apply(req);
 

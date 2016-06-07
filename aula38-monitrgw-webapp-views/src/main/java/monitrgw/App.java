@@ -26,13 +26,10 @@ import static java.util.stream.Collectors.joining;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        try(MonitrServiceAsyncNio service = new MonitrServiceAsyncNio()) {
-            new HttpServer()
-                    .addHandler("/news", (req) -> service.GetLastNews().map(Object::toString).collect(joining()))
-                    .addHandler("/stock/*", (req) -> {
-                        String symbol = req.getPathInfo().substring(1);
-                        return service.getStockDetailsAsync(symbol).apply(symbol).toString();
-                    })
+        try(MonitrController ctr = new MonitrController(new MonitrServiceAsyncNio())) {
+            new HttpServer(3000)
+                    .addHandler("/news", ctr::getNews)
+                    .addHandler("/stock/*", ctr::getStock)
                     .run();
 
         }

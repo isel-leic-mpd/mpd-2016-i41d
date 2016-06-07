@@ -1,0 +1,20 @@
+<html>
+<body>
+<table>
+    <tr>
+        <th>Title</th>
+        <th>Symbol</th>
+        <th>Source</th>
+        <th>Domain</th>
+    </tr>
+    {{#each this}}
+    <tr>
+        <td>{{title}}</td>
+        <td><a href="stock/{{stockSymbol}}">{{stockSymbol}}</a></td>
+        <td><a href="{{link}}">Source</a></td>
+        <td>{{domain}}</td>
+    </tr>
+    {{/each}}
+</table>
+</body>
+</html>

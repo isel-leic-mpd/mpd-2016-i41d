@@ -45,7 +45,7 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
         );
     }
 
-    private Function<String, MonitrStockDetails> getStockDetailsAsync(String symbol) {
+    public  Function<String, MonitrStockDetails> getStockDetailsAsync(String symbol) {
         CompletableFuture<MonitrStockDetails> stock = getStockDetails(symbol); // 1 http get request
         return (s) -> stock.join(); // Waiting for response
     }

@@ -76,4 +76,19 @@ public class MonitrStockDetails {
     public MonitrStockAnalysisData getAnalysis() {
         return analysis.apply(symbol);
     }
+
+    @Override
+    public String toString() {
+        return "MonitrStockDetails{" +
+                "industry='" + industry + '\'' +
+                ", name='" + name + '\'' +
+                ", sector='" + sector + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", status=" + status +
+                ", description='" + description + '\'' +
+                ", alias=" + alias +
+                ", competitors=" + competitors +
+                ", analysis=" + analysis +
+                '}';
+    }
 }

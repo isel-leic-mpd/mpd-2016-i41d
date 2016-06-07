@@ -16,28 +16,25 @@
  */
 package monitrgw;
 
-import monitrgw.domain.MonitrMarketData;
 import monitrgw.domain.async.MonitrServiceAsyncNio;
+import util.HttpServer;
 
 import java.util.function.Supplier;
-import java.util.stream.Stream;
+import static java.util.stream.Collectors.joining;
 
 
 public class App {
 
     public static void main(String[] args) throws Exception {
         try(MonitrServiceAsyncNio service = new MonitrServiceAsyncNio()) {
-            System.out.println("########### Async approach.... ");
-            final Stream<MonitrMarketData> data3 = measure(() -> service.GetLastNews()); // 1 Http request + 1 Http request
-            final MonitrMarketData first3 = measure(() -> data3.findFirst().get());
-            System.out.println("Doing stuff....");
-            sleep(2000); // Doing stuff....
-            measure(() -> first3.getStockDetails());
-            measure(() -> first3.getStockDetails().getAnalysis()); // 1 Http request
-            System.out.println("########### Async approach.... ");
-            measure(() -> first3);
-            measure(() -> first3.getStockDetails()); // 1 Http request
-            measure(() -> first3.getStockDetails().getAnalysis()); // 1 Http request
+            new HttpServer()
+                    .addHandler("/news", (req) -> service.GetLastNews().map(Object::toString).collect(joining()))
+                    .addHandler("/stock/*", (req) -> {
+                        String symbol = req.getPathInfo().substring(1);
+                        return service.getStockDetailsAsync(symbol).apply(symbol).toString();
+                    })
+                    .run();
+
         }
     }
 

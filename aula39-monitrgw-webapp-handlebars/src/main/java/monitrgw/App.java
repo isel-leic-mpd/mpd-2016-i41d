@@ -19,6 +19,7 @@ package monitrgw;
 import monitrgw.domain.async.MonitrServiceAsyncNio;
 import util.HttpServer;
 
+import java.io.IOException;
 import java.util.function.Supplier;
 import static java.util.stream.Collectors.joining;
 
@@ -28,8 +29,8 @@ public class App {
     public static void main(String[] args) throws Exception {
         try(MonitrController ctr = new MonitrController(new MonitrServiceAsyncNio())) {
             new HttpServer(3000)
-                    .addHandler("/news", ctr::getNews)
-                    .addHandler("/stock/*", ctr::getStock)
+                    .addHandler("/news", req -> measure(() -> ctr.getNews(req)))
+                    .addHandler("/stock/*", req -> measure(() -> ctr.getStock(req)))
                     .run();
 
         }
@@ -43,11 +44,13 @@ public class App {
         }
     }
 
-    public static <T> T measure(Supplier<T> action) {
+    public static <T> T measure(SupplierThrowable<T> action) throws IOException {
         long start = System.nanoTime();
         T res = action.get();
         long duration = (System.nanoTime() - start) / 1_000; // micro seconds
-        System.out.println( "[" + duration + " us] " + res);
+        System.out.println( "[" + duration + " us]");
         return res;
     }
+
+    interface SupplierThrowable<T> { public T get() throws IOException; }
 }

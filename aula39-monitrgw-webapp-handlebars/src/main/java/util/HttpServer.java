@@ -17,6 +17,11 @@ import java.util.function.Function;
  *         created on 03-06-2016
  */
 public class HttpServer {
+
+    public interface HttpGetHandler {
+        String apply(HttpServletRequest req) throws IOException;
+    }
+
     private final Server server;
     private final ServletHandler container;
 
@@ -26,7 +31,7 @@ public class HttpServer {
         server.setHandler(container);
     }
 
-    public HttpServer addHandler(String path, Function<HttpServletRequest, String> handler) {
+    public HttpServer addHandler(String path, HttpGetHandler handler) {
         /*
          * Associação entre Endpoint <-> Servlet
          */
@@ -38,27 +43,27 @@ public class HttpServer {
         server.start();
         server.join();
     }
-}
 
-class TimeServlet extends HttpServlet{
-    private final Function<HttpServletRequest, String> handler;
+    static class TimeServlet extends HttpServlet {
+        private final HttpGetHandler handler;
 
-    public TimeServlet(Function<HttpServletRequest, String> handler) {
-        this.handler = handler;
-    }
+        public TimeServlet(HttpGetHandler handler) {
+            this.handler = handler;
+        }
 
-    @Override
-    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, IOException {
-        Charset utf8 = Charset.forName("utf-8");
-        resp.setContentType(String.format("text/html; charset=%s",utf8.name()));
+        @Override
+        public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException, IOException {
+            Charset utf8 = Charset.forName("utf-8");
+            resp.setContentType(String.format("text/html; charset=%s", utf8.name()));
 
-        String respBody = handler.apply(req);
+            String respBody = handler.apply(req);
 
-        byte[] respBodyBytes = respBody.getBytes(utf8);
-        resp.setStatus(200);
-        resp.setContentLength(respBodyBytes.length);
-        OutputStream os = resp.getOutputStream();
-        os.write(respBodyBytes);
-        os.close();
+            byte[] respBodyBytes = respBody.getBytes(utf8);
+            resp.setStatus(200);
+            resp.setContentLength(respBodyBytes.length);
+            OutputStream os = resp.getOutputStream();
+            os.write(respBodyBytes);
+            os.close();
+        }
     }
 }

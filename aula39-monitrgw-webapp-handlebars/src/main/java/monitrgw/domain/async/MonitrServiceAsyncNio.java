@@ -41,17 +41,12 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
                 dto.link,
                 dto.timeInMilis,
                 dto.domain,
-                getStockDetailsAsync(dto.symbol)
+                getStockDetails(dto.symbol)
         );
     }
 
-    public  Function<String, MonitrStockDetails> getStockDetailsAsync(String symbol) {
-        CompletableFuture<MonitrStockDetails> stock = getStockDetails(symbol); // 1 http get request
-        return (s) -> stock.join(); // Waiting for response
-    }
 
-
-    private CompletableFuture<MonitrStockDetails> getStockDetails(String symbol) {
+    public CompletableFuture<MonitrStockDetails> getStockDetails(String symbol) {
         CompletableFuture<MonitrStockDetailsDto> promise = api.GetStockDetails(symbol);
         return promise.thenApply(dto ->
                 new MonitrStockDetails(
@@ -66,8 +61,8 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
                 getStockAnalysis(symbol, dto.name)));
     }
 
-    private Function<String, MonitrStockAnalysisData> getStockAnalysis(String s, String name) {
-        CompletableFuture<MonitrStockAnalysisData> res = api
+    private CompletableFuture<MonitrStockAnalysisData> getStockAnalysis(String s, String name) {
+        return api
                 .GetStockAnalysis(s)
                 .thenApply(dto -> new MonitrStockAnalysisData(
                     s,
@@ -77,8 +72,6 @@ public class MonitrServiceAsyncNio implements IMonitrService, AutoCloseable{
                     dto.averageSentiment,
                     dto.positive,
                     dto.negative));
-
-        return (symbol) -> res.join();
     }
 
     @Override

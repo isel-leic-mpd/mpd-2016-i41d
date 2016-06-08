@@ -4,6 +4,7 @@ import monitrgw.webapi.MonitrApi;
 import monitrgw.webapi.dto.MonitrStockAnalysisDtoData;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
@@ -18,7 +19,7 @@ public class MonitrStockDetails {
     private final String description;
     private final List<String> alias;
     private final List<String> competitors;
-    private final Function<String, MonitrStockAnalysisData> analysis;
+    private final CompletableFuture<MonitrStockAnalysisData> analysis;
 
     public MonitrStockDetails(
             String industry,
@@ -29,7 +30,7 @@ public class MonitrStockDetails {
             String description,
             List<String> alias,
             List<String> competitors,
-            Function<String, MonitrStockAnalysisData> analysis) {
+            CompletableFuture<MonitrStockAnalysisData> analysis) {
         this.industry = industry;
         this.name = name;
         this.sector = sector;
@@ -73,8 +74,8 @@ public class MonitrStockDetails {
         return competitors;
     }
 
-    public MonitrStockAnalysisData getAnalysis() {
-        return analysis.apply(symbol);
+    public CompletableFuture<MonitrStockAnalysisData> getAnalysis() {
+        return analysis;
     }
 
     @Override

@@ -12,9 +12,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.concurrent.CompletableFuture;
 
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -54,6 +53,7 @@ public class MonitrController implements AutoCloseable{
         Map<String, String> stockViews = model
                 .stream()
                 .map(MonitrMarketData::getStockDetails)
+                .map(CompletableFuture::join)
                 .distinct()
                 .collect(toMap(
                     stock -> "/stock/" + stock.getSymbol(),
@@ -68,8 +68,8 @@ public class MonitrController implements AutoCloseable{
         if(res != null) return res;
         String symbol = req.getPathInfo().substring(1);
         MonitrStockDetails stock = service
-                .getStockDetailsAsync(symbol)
-                .apply(symbol);
+                .getStockDetails(symbol)
+                .join();
         res = viewStock.apply(stock);
         cacheViewsStocks.put(req.getRequestURI(), res);
         return res;

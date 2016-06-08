@@ -4,6 +4,7 @@ import monitrgw.webapi.MonitrApi;
 import monitrgw.webapi.dto.MonitrMarketDtoData;
 import monitrgw.webapi.dto.MonitrStockDetailsDto;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 /**
@@ -16,7 +17,7 @@ public class MonitrMarketData {
     private final String link;
     private final long timeInMilis;
     private final String domain;
-    private final Function<String, MonitrStockDetails> stockDetails;
+    private final CompletableFuture<MonitrStockDetails> stockDetails;
 
     public MonitrMarketData(
             String market,
@@ -25,7 +26,7 @@ public class MonitrMarketData {
             String link,
             long timeInMilis,
             String domain,
-            Function<String, MonitrStockDetails> stockDetails) {
+            CompletableFuture<MonitrStockDetails> stockDetails) {
         this.market = market;
         this.title = title;
         this.stockSymbol = stockSymbol;
@@ -59,8 +60,8 @@ public class MonitrMarketData {
         return domain;
     }
 
-    public MonitrStockDetails getStockDetails() {
-        return stockDetails.apply(stockSymbol);
+    public CompletableFuture<MonitrStockDetails> getStockDetails() {
+        return stockDetails;
     }
 
     @Override

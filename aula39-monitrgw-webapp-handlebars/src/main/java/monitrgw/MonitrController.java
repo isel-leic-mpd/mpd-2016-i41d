@@ -13,9 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * @author Miguel Gamboa
@@ -38,37 +39,38 @@ public class MonitrController implements AutoCloseable{
 
     private final MonitrServiceAsyncNio service;
 
-    public String getNews(HttpServletRequest req) {
-        List<MonitrMarketData> model = service.GetLastNews().collect(toList());
+    private String viewsStockBindTo(MonitrStockDetails stock) {
         try {
-            // Iniciar a criação das Views para cada Stock
-            // Iterar sobre as noticias, map -> Symbol, distinct, gerar uma View;
-            model.forEach(
-                    n -> {
-                        try {
-                            cacheViewsStocks.put("stock/" + n.getStockSymbol(), viewStock.apply(n.getStockDetails()));
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
-            return viewNews.apply(model);
+            return viewStock.apply(stock);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String getStock(HttpServletRequest req) {
+    public String getNews(HttpServletRequest req) throws IOException {
+        List<MonitrMarketData> model = service.GetLastNews().collect(toList());
+        // Iniciar a criação das Views para cada Stock
+        // Iterar sobre as noticias, map -> Symbol, distinct, gerar uma View;
+        Map<String, String> stockViews = model
+                .stream()
+                .map(MonitrMarketData::getStockDetails)
+                .distinct()
+                .collect(toMap(
+                    stock -> "/stock/" + stock.getSymbol(),
+                    stock -> viewsStockBindTo(stock))
+                );
+        cacheViewsStocks.putAll(stockViews);
+        return viewNews.apply(model);
+    }
+
+    public String getStock(HttpServletRequest req) throws IOException {
         String res = cacheViewsStocks.get(req.getRequestURI());
         if(res != null) return res;
         String symbol = req.getPathInfo().substring(1);
         MonitrStockDetails stock = service
                 .getStockDetailsAsync(symbol)
                 .apply(symbol);
-        try {
-            res = viewStock.apply(stock);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        res = viewStock.apply(stock);
         cacheViewsStocks.put(req.getRequestURI(), res);
         return res;
     }

@@ -78,6 +78,22 @@ public class MonitrStockDetails {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MonitrStockDetails that = (MonitrStockDetails) o;
+
+        return symbol != null ? symbol.equals(that.symbol) : that.symbol == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return symbol != null ? symbol.hashCode() : 0;
+    }
+
+    @Override
     public String toString() {
         return "MonitrStockDetails{" +
                 "industry='" + industry + '\'' +
